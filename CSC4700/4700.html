@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Which Mike do you like?</h1>
+
+<form action="all_the_mikes.html" method="get">
+  <label for="mike">Pick a Mike:</label>
+  <select name="mike" id="mike">
+    <option id="mike-i" value="mike-i">Mike I</option>
+    <option id="mike-ii" value="mike-ii">Mike II</option>
+    <option id="mike-iii" value="mike-iii">Mike III</option>
+    <option id="mike-iv" value="mike-iv">Mike IV</option>
+    <option id="mike-v" value="mike-v">Mike V</option>
+    <option id="mike-vi" value="mike-vi">Mike VI</option>
+    <option id="mike-vii" value="mike-vii">Mike VII</option>
+  </select>
+  <input type="submit" value="Select">
+</form>
+
+<div id="mike-place">
+
+</div>
+<script>
+    s = new URLSearchParams(window.location.search).get('mike')
+    // Allowlist: only accept alphanumeric characters and hyphens
+    if (/^[a-z0-9-]+$/i.test(s)) {
+        const option = document.getElementById(s);
+        option.setAttribute("selected", "");
+        mp = document.getElementById('mike-place'); 
+        if(s){
+            // HTML encode the output
+            mp.innerHTML = "<img src='mikes/" + encodeURIComponent(s) + ".jpg' >";
+        }
+    }
+</script>
+
+<script>
+
+    mp = document.getElementById('mike-place'); 
+    if(s){
+    mp.innerHTML = "<img src='mikes/" + s + ".jpg' >";
+	    }
+</script>
+
+</body>
+</html>
+
